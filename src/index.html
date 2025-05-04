@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Local Maine Business Search - Find and explore local businesses across Maine">
+    <title>Local Maine Business Search</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+            <div class="nav__logo">
+                <h1>Local Maine Business Search</h1>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <span class="theme-toggle__icon">🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero__content">
+                <h2 id="hero-title" class="hero__title">Discover Local Maine Businesses</h2>
+                <p class="hero__description">Find and explore the best local businesses across Maine. From restaurants to services, we've got you covered.</p>
+                <div class="hero__cta">
+                    <a href="business-search.html" class="btn btn--primary">Search Businesses</a>
+                    <a href="random-restaurant.html" class="btn btn--secondary">Random Restaurant Picker</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" aria-labelledby="features-title">
+            <h2 id="features-title" class="features__title">What We Offer</h2>
+            <div class="features__grid">
+                <div class="feature-card">
+                    <h3 class="feature-card__title">Business Search</h3>
+                    <p class="feature-card__description">Find local businesses with advanced filtering options</p>
+                </div>
+                <div class="feature-card">
+                    <h3 class="feature-card__title">Random Picker</h3>
+                    <p class="feature-card__description">Can't decide? Let us pick a restaurant for you!</p>
+                </div>
+                <div class="feature-card">
+                    <h3 class="feature-card__title">Contact Us</h3>
+                    <p class="feature-card__description">Have questions? We're here to help</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__content">
+            <nav class="footer__nav" aria-label="Footer navigation">
+                <a href="business-search.html" class="footer__link">Search</a>
+                <a href="random-restaurant.html" class="footer__link">Random Picker</a>
+                <a href="contact.html" class="footer__link">Contact</a>
+            </nav>
+            <p class="footer__copyright">&copy; 2024 Local Maine Business Search. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="scripjs/index.js"></script>
+</body>
+</html>
