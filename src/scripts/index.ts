@@ -1,78 +1,50 @@
 // Theme management
-interface ThemeState {
-    isDark: boolean;
+const THEME_KEY = 'theme-preference';
+
+// Get initial theme from localStorage or system preference
+function getInitialTheme(): string {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) {
+        return savedTheme;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-class ThemeManager {
-    private static instance: ThemeManager;
-    private state: ThemeState;
-    private readonly THEME_KEY = 'theme-preference';
-
-    private constructor() {
-        this.state = {
-            isDark: this.getInitialThemeState()
-        };
-        this.applyTheme();
-    }
-
-    public static getInstance(): ThemeManager {
-        if (!ThemeManager.instance) {
-            ThemeManager.instance = new ThemeManager();
-        }
-        return ThemeManager.instance;
-    }
-
-    private getInitialThemeState(): boolean {
-        const savedTheme = localStorage.getItem(this.THEME_KEY);
-        if (savedTheme) {
-            return savedTheme === 'dark';
-        }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    private applyTheme(): void {
-        document.documentElement.setAttribute(
-            'data-theme',
-            this.state.isDark ? 'dark' : 'light'
-        );
-        localStorage.setItem(this.THEME_KEY, this.state.isDark ? 'dark' : 'light');
-    }
-
-    public toggleTheme(): void {
-        this.state.isDark = !this.state.isDark;
-        this.applyTheme();
-    }
-
-    public getCurrentTheme(): boolean {
-        return this.state.isDark;
-    }
+// Apply theme to document
+function applyTheme(theme: string): void {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
 }
 
-// DOM Elements
-const themeToggle = document.querySelector('.theme-toggle') as HTMLButtonElement;
-const themeIcon = document.querySelector('.theme-toggle__icon') as HTMLSpanElement;
-
-// Event Listeners
-function initializeThemeToggle(): void {
-    if (!themeToggle || !themeIcon) return;
-
-    const themeManager = ThemeManager.getInstance();
-    
-    // Set initial icon
-    updateThemeIcon(themeManager.getCurrentTheme());
-
-    themeToggle.addEventListener('click', () => {
-        themeManager.toggleTheme();
-        updateThemeIcon(themeManager.getCurrentTheme());
-    });
+// Toggle between light and dark theme
+function toggleTheme(): void {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+    updateThemeIcon(newTheme === 'dark');
 }
 
+// Update theme icon based on current theme
 function updateThemeIcon(isDark: boolean): void {
-    if (!themeIcon) return;
-    themeIcon.textContent = isDark ? '☀️' : '🌙';
+    const themeIcon = document.querySelector('.theme-toggle__icon');
+    if (themeIcon) {
+        themeIcon.textContent = isDark ? '☀️' : '🌙';
+    }
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    initializeThemeToggle();
-});
+// Initialize theme functionality
+function initializeTheme(): void {
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (!themeToggle) return;
+
+    // Set initial theme
+    const initialTheme = getInitialTheme();
+    applyTheme(initialTheme);
+    updateThemeIcon(initialTheme === 'dark');
+
+    // Add click event listener
+    themeToggle.addEventListener('click', toggleTheme);
+}
+
+// Start when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeTheme);

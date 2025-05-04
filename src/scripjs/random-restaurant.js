@@ -10,30 +10,7 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-// Types
-
-// Constants
-var CITY_LOCATIONS = [{
-  name: 'Orono',
-  lat: 44.8832,
-  lng: -68.6719
-}, {
-  name: 'Bangor',
-  lat: 44.8016,
-  lng: -68.7772
-}, {
-  name: 'Portland',
-  lat: 43.6591,
-  lng: -70.2568
-}, {
-  name: 'Bar Harbor',
-  lat: 44.3876,
-  lng: -68.2039
-}, {
-  name: 'Augusta',
-  lat: 44.3106,
-  lng: -69.7795
-}];
+// API Configuration
 var API_CONFIG = {
   baseUrl: 'https://local-business-data.p.rapidapi.com/search-in-area',
   headers: {
@@ -42,52 +19,55 @@ var API_CONFIG = {
   }
 };
 
-// DOM Elements
-var searchForm = document.getElementById('searchForm');
-var resultsContainer = document.getElementById('resultsContainer');
-var businessModal = document.getElementById('businessModal');
-var modalTitle = document.getElementById('modalTitle');
-var modalContent = document.getElementById('modalContent');
-var modalClose = document.querySelector('.modal__close');
-var citySelect = document.getElementById('city');
+// City locations with latitude and longitude
+var CITY_LOCATIONS = {
+  'Orono': {
+    lat: 44.88269,
+    lng: -68.71603
+  },
+  'Bangor': {
+    lat: 44.8016,
+    lng: -68.7772
+  },
+  'Portland': {
+    lat: 43.6591,
+    lng: -70.2568
+  },
+  'Bar Harbor': {
+    lat: 44.3876,
+    lng: -68.2039
+  },
+  'Augusta': {
+    lat: 44.3106,
+    lng: -69.7795
+  }
+};
 
-// When loading api results
+// DOM Elements
+var citySelect = document.getElementById('city');
+var randomButton = document.getElementById('randomButton');
+var resultCard = document.getElementById('resultCard');
+var restaurantName = document.getElementById('restaurantName');
+var restaurantAddress = document.getElementById('restaurantAddress');
+var restaurantRating = document.getElementById('restaurantRating');
+var restaurantType = document.getElementById('restaurantType');
+
+// Utility Functions
 function showLoading() {
-  resultsContainer.innerHTML = "\n        <div class=\"loading\">\n            <div class=\"loading__spinner\"></div>\n        </div>\n    ";
+  randomButton.disabled = true;
+  randomButton.textContent = 'Loading...';
 }
 function hideLoading() {
-  var loadingElement = resultsContainer.querySelector('.loading');
-  if (loadingElement) {
-    loadingElement.remove();
-  }
+  randomButton.disabled = false;
+  randomButton.textContent = 'Surprise Me!';
 }
 function showError(message) {
-  resultsContainer.innerHTML = "\n        <div class=\"error-message\">\n            <p>".concat(message, "</p>\n        </div>\n    ");
+  alert(message);
+  hideLoading();
 }
-function createBusinessCard(business) {
-  var card = document.createElement('div');
-  card.className = 'business-card';
-  card.innerHTML = "\n        <h3 class=\"business-card__title\">".concat(business.name, "</h3>\n        <p class=\"business-card__address\">").concat(business.full_address, "</p>\n        <div class=\"business-card__rating\">\n            <span>\u2B50 ").concat(business.rating.toFixed(1), "</span>\n            <span>(").concat(business.reviews, " reviews)</span>\n        </div>\n        <span class=\"business-card__type\">").concat(business.type, "</span>\n    ");
-  card.addEventListener('click', function () {
-    return showBusinessDetails(business);
-  });
-  return card;
-}
-function showBusinessDetails(business) {
-  modalTitle.textContent = business.name;
-  modalContent.innerHTML = "\n        <div class=\"business-details\">\n            <p><strong>Type:</strong> ".concat(business.type, "</p>\n            <p><strong>Address:</strong> ").concat(business.full_address, "</p>\n            <p><strong>Rating:</strong> \u2B50 ").concat(business.rating.toFixed(1), " (").concat(business.reviews, " reviews)</p>\n            ").concat(business.website ? "<p><strong>Website:</strong> <a href=\"".concat(business.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(business.website, "</a></p>") : '', "\n            ").concat(business.phone_number ? "<p><strong>Phone:</strong> <a href=\"tel:".concat(business.phone_number, "\">").concat(business.phone_number, "</a></p>") : '', "\n            <p><strong>Location:</strong> ").concat(business.latitude, ", ").concat(business.longitude, "</p>\n        </div>\n    ");
-  businessModal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-  businessModal.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// API Functions
 function fetchBusinesses(_x) {
   return _fetchBusinesses.apply(this, arguments);
-} // Event Handlers
+} // Fetch and display random restaurant
 function _fetchBusinesses() {
   _fetchBusinesses = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(params) {
     var queryParams, url, response, data;
@@ -136,80 +116,65 @@ function _fetchBusinesses() {
   }));
   return _fetchBusinesses.apply(this, arguments);
 }
-function handleCityChange(event) {
-  var select = event.target;
-  var selectedCity = CITY_LOCATIONS.find(function (city) {
-    return city.name === select.value;
-  });
-  if (selectedCity) {
-    var latInput = document.getElementById('lat');
-    var lngInput = document.getElementById('lng');
-    latInput.value = selectedCity.lat.toString();
-    lngInput.value = selectedCity.lng.toString();
-  }
-}
-function handleSearch(_x2) {
-  return _handleSearch.apply(this, arguments);
-} // Initialize
-function _handleSearch() {
-  _handleSearch = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(event) {
-    var formData, selectedCity, cityLocation, params, businesses, i;
+function getRandomRestaurant() {
+  return _getRandomRestaurant.apply(this, arguments);
+} // Event Listeners
+function _getRandomRestaurant() {
+  _getRandomRestaurant = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var selectedCity, location, params, businesses, randomIndex, restaurant;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          event.preventDefault();
-          formData = new FormData(searchForm);
-          selectedCity = formData.get('city');
+          selectedCity = citySelect.value;
           if (selectedCity) {
-            _context2.next = 6;
+            _context2.next = 4;
             break;
           }
-          showError('Please select a city');
+          showError('Please select a city first');
           return _context2.abrupt("return");
-        case 6:
-          cityLocation = CITY_LOCATIONS.find(function (city) {
-            return city.name === selectedCity;
-          });
-          if (cityLocation) {
-            _context2.next = 10;
-            break;
-          }
-          showError('Invalid city selection');
-          return _context2.abrupt("return");
-        case 10:
-          params = {
-            query: formData.get('query'),
-            lat: cityLocation.lat,
-            lng: cityLocation.lng,
-            zoom: 13,
-            limit: parseInt(formData.get('limit')),
-            language: 'en',
-            region: 'us'
-          };
-          _context2.prev = 11;
+        case 4:
           showLoading();
-          _context2.next = 15;
+          _context2.prev = 5;
+          location = CITY_LOCATIONS[selectedCity];
+          params = {
+            lat: location.lat,
+            lng: location.lng,
+            zoom: 13,
+            limit: 10,
+            language: 'en',
+            region: 'us',
+            extract_emails_and_contacts: false,
+            query: 'Restaurants'
+          };
+          _context2.next = 10;
           return fetchBusinesses(params);
-        case 15:
+        case 10:
           businesses = _context2.sent;
           if (!(businesses.length === 0)) {
-            _context2.next = 19;
+            _context2.next = 13;
             break;
           }
-          showError('No businesses found matching your criteria.');
-          return _context2.abrupt("return");
-        case 19:
-          resultsContainer.innerHTML = '';
-          // Using a for loop as required
-          for (i = 0; i < businesses.length; i++) {
-            resultsContainer.appendChild(createBusinessCard(businesses[i]));
-          }
+          throw new Error('No restaurants found in this area');
+        case 13:
+          // Randomly select a restaurant
+          randomIndex = Math.floor(Math.random() * businesses.length);
+          restaurant = businesses[randomIndex]; // Display the restaurant
+          restaurantName.textContent = restaurant.name;
+          restaurantAddress.textContent = restaurant.address;
+          restaurantRating.textContent = "Rating: ".concat(restaurant.rating);
+          restaurantType.textContent = restaurant.type || 'Restaurant';
+
+          // Show the result card with animation
+          resultCard.classList.remove('hidden');
+          setTimeout(function () {
+            return resultCard.classList.add('show');
+          }, 10);
           _context2.next = 26;
           break;
         case 23:
           _context2.prev = 23;
-          _context2.t0 = _context2["catch"](11);
-          showError('An error occurred while fetching businesses. Please try again.');
+          _context2.t0 = _context2["catch"](5);
+          showError(_context2.t0 instanceof Error ? _context2.t0.message : 'An unknown error occurred');
         case 26:
           _context2.prev = 26;
           hideLoading();
@@ -218,30 +183,8 @@ function _handleSearch() {
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[11, 23, 26, 29]]);
+    }, _callee2, null, [[5, 23, 26, 29]]);
   }));
-  return _handleSearch.apply(this, arguments);
+  return _getRandomRestaurant.apply(this, arguments);
 }
-function initialize() {
-  // Event Listeners
-  searchForm.addEventListener('submit', handleSearch);
-  modalClose.addEventListener('click', closeModal);
-  citySelect.addEventListener('change', handleCityChange);
-
-  // Close modal when clicking outside
-  businessModal.addEventListener('click', function (event) {
-    if (event.target === businessModal) {
-      closeModal();
-    }
-  });
-
-  // Close modal with Escape key
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && businessModal.classList.contains('active')) {
-      closeModal();
-    }
-  });
-}
-
-// Start the application
-document.addEventListener('DOMContentLoaded', initialize);
+randomButton.addEventListener('click', getRandomRestaurant);

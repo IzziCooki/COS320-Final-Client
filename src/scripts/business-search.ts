@@ -22,7 +22,21 @@ interface SearchParams {
     region: string;
 }
 
-// API Configuration
+interface CityLocation {
+    name: string;
+    lat: number;
+    lng: number;
+}
+
+// Constants
+const CITY_LOCATIONS: CityLocation[] = [
+    { name: 'Orono', lat: 44.8832, lng: -68.6719 },
+    { name: 'Bangor', lat: 44.8016, lng: -68.7772 },
+    { name: 'Portland', lat: 43.6591, lng: -70.2568 },
+    { name: 'Bar Harbor', lat: 44.3876, lng: -68.2039 },
+    { name: 'Augusta', lat: 44.3106, lng: -69.7795 }
+];
+
 const API_CONFIG = {
     baseUrl: 'https://local-business-data.p.rapidapi.com/search-in-area',
     headers: {
@@ -38,8 +52,10 @@ const businessModal = document.getElementById('businessModal') as HTMLDivElement
 const modalTitle = document.getElementById('modalTitle') as HTMLHeadingElement;
 const modalContent = document.getElementById('modalContent') as HTMLDivElement;
 const modalClose = document.querySelector('.modal__close') as HTMLButtonElement;
+const citySelect = document.getElementById('city') as HTMLSelectElement;
 
-// Utility Functions
+
+// When loading api results
 function showLoading(): void {
     resultsContainer.innerHTML = `
         <div class="loading">
@@ -132,17 +148,44 @@ async function fetchBusinesses(params: SearchParams): Promise<Business[]> {
 }
 
 // Event Handlers
+function handleCityChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const selectedCity = CITY_LOCATIONS.find(city => city.name === select.value);
+    
+    if (selectedCity) {
+        const latInput = document.getElementById('lat') as HTMLInputElement;
+        const lngInput = document.getElementById('lng') as HTMLInputElement;
+        
+        latInput.value = selectedCity.lat.toString();
+        lngInput.value = selectedCity.lng.toString();
+    }
+}
+
+
 async function handleSearch(event: Event): Promise<void> {
     event.preventDefault();
     
     const formData = new FormData(searchForm);
+    const selectedCity = formData.get('city') as string;
+    
+    if (!selectedCity) {
+        showError('Please select a city');
+        return;
+    }
+    
+    const cityLocation = CITY_LOCATIONS.find(city => city.name === selectedCity);
+    if (!cityLocation) {
+        showError('Invalid city selection');
+        return;
+    }
+    
     const params: SearchParams = {
         query: formData.get('query') as string,
-        lat: parseFloat(formData.get('lat') as string),
-        lng: parseFloat(formData.get('lng') as string),
-        zoom: parseInt(formData.get('zoom') as string),
+        lat: cityLocation.lat,
+        lng: cityLocation.lng,
+        zoom: 13,
         limit: parseInt(formData.get('limit') as string),
-        language: formData.get('language') as string,
+        language: 'en',
         region: 'us'
     };
 
@@ -156,9 +199,10 @@ async function handleSearch(event: Event): Promise<void> {
         }
 
         resultsContainer.innerHTML = '';
-        businesses.forEach(business => {
-            resultsContainer.appendChild(createBusinessCard(business));
-        });
+        // Using a for loop as required
+        for (let i = 0; i < businesses.length; i++) {
+            resultsContainer.appendChild(createBusinessCard(businesses[i]));
+        }
     } catch (error) {
         showError('An error occurred while fetching businesses. Please try again.');
     } finally {
@@ -168,8 +212,11 @@ async function handleSearch(event: Event): Promise<void> {
 
 // Initialize
 function initialize(): void {
+    // Event Listeners
     searchForm.addEventListener('submit', handleSearch);
     modalClose.addEventListener('click', closeModal);
+    citySelect.addEventListener('change', handleCityChange);
+    
     
     // Close modal when clicking outside
     businessModal.addEventListener('click', (event) => {
@@ -184,6 +231,8 @@ function initialize(): void {
             closeModal();
         }
     });
+    
+
 }
 
 // Start the application
