@@ -5,7 +5,7 @@ interface Business {
     type: string;
     full_address: string;
     rating: number;
-    reviews: number;
+    review_count: number;
     website?: string;
     phone_number?: string;
     latitude: number;
@@ -87,7 +87,7 @@ function createBusinessCard(business: Business): HTMLDivElement {
         <p class="business-card__address">${business.full_address}</p>
         <div class="business-card__rating">
             <span>⭐ ${business.rating.toFixed(1)}</span>
-            <span>(${business.reviews} reviews)</span>
+            <span>(${business.review_count} reviews)</span>
         </div>
         <span class="business-card__type">${business.type}</span>
     `;
@@ -102,7 +102,7 @@ function showBusinessDetails(business: Business): void {
         <div class="business-details">
             <p><strong>Type:</strong> ${business.type}</p>
             <p><strong>Address:</strong> ${business.full_address}</p>
-            <p><strong>Rating:</strong> ⭐ ${business.rating.toFixed(1)} (${business.reviews} reviews)</p>
+            <p><strong>Rating:</strong> ⭐ ${business.rating.toFixed(1)} (${business.review_count} reviews)</p>
             ${business.website ? `<p><strong>Website:</strong> <a href="${business.website}" target="_blank" rel="noopener noreferrer">${business.website}</a></p>` : ''}
             ${business.phone_number ? `<p><strong>Phone:</strong> <a href="tel:${business.phone_number}">${business.phone_number}</a></p>` : ''}
             <p><strong>Location:</strong> ${business.latitude}, ${business.longitude}</p>

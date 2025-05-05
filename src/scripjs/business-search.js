@@ -67,7 +67,7 @@ function showError(message) {
 function createBusinessCard(business) {
   var card = document.createElement('div');
   card.className = 'business-card';
-  card.innerHTML = "\n        <h3 class=\"business-card__title\">".concat(business.name, "</h3>\n        <p class=\"business-card__address\">").concat(business.full_address, "</p>\n        <div class=\"business-card__rating\">\n            <span>\u2B50 ").concat(business.rating.toFixed(1), "</span>\n            <span>(").concat(business.reviews, " reviews)</span>\n        </div>\n        <span class=\"business-card__type\">").concat(business.type, "</span>\n    ");
+  card.innerHTML = "\n        <h3 class=\"business-card__title\">".concat(business.name, "</h3>\n        <p class=\"business-card__address\">").concat(business.full_address, "</p>\n        <div class=\"business-card__rating\">\n            <span>\u2B50 ").concat(business.rating.toFixed(1), "</span>\n            <span>(").concat(business.review_count, " reviews)</span>\n        </div>\n        <span class=\"business-card__type\">").concat(business.type, "</span>\n    ");
   card.addEventListener('click', function () {
     return showBusinessDetails(business);
   });
@@ -75,7 +75,7 @@ function createBusinessCard(business) {
 }
 function showBusinessDetails(business) {
   modalTitle.textContent = business.name;
-  modalContent.innerHTML = "\n        <div class=\"business-details\">\n            <p><strong>Type:</strong> ".concat(business.type, "</p>\n            <p><strong>Address:</strong> ").concat(business.full_address, "</p>\n            <p><strong>Rating:</strong> \u2B50 ").concat(business.rating.toFixed(1), " (").concat(business.reviews, " reviews)</p>\n            ").concat(business.website ? "<p><strong>Website:</strong> <a href=\"".concat(business.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(business.website, "</a></p>") : '', "\n            ").concat(business.phone_number ? "<p><strong>Phone:</strong> <a href=\"tel:".concat(business.phone_number, "\">").concat(business.phone_number, "</a></p>") : '', "\n            <p><strong>Location:</strong> ").concat(business.latitude, ", ").concat(business.longitude, "</p>\n        </div>\n    ");
+  modalContent.innerHTML = "\n        <div class=\"business-details\">\n            <p><strong>Type:</strong> ".concat(business.type, "</p>\n            <p><strong>Address:</strong> ").concat(business.full_address, "</p>\n            <p><strong>Rating:</strong> \u2B50 ").concat(business.rating.toFixed(1), " (").concat(business.review_count, " reviews)</p>\n            ").concat(business.website ? "<p><strong>Website:</strong> <a href=\"".concat(business.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(business.website, "</a></p>") : '', "\n            ").concat(business.phone_number ? "<p><strong>Phone:</strong> <a href=\"tel:".concat(business.phone_number, "\">").concat(business.phone_number, "</a></p>") : '', "\n            <p><strong>Location:</strong> ").concat(business.latitude, ", ").concat(business.longitude, "</p>\n        </div>\n    ");
   businessModal.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
