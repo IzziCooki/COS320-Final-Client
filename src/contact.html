@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact us for any questions or feedback">
+    <title>Contact Us - Local Maine Business Search</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://web3forms.com/client/script.js" async defer></script>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav__logo">
+                <a href="index.html">
+                    <img src="images/logo.jpg" alt="Local Maine Business Search Logo" class="nav__logo-img" height="48" />
+                    <h1>Local Maine Business Search</h1>
+                </a>
+            </div>
+            <div class="nav__links">
+                <a href="business-search.html" class="nav__link">Business Search</a>
+                <a href="random-restaurant.html" class="nav__link">Random Restaurant</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="theme-toggle__icon">🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="contact-section">
+            <h2 class="contact-section__title">Contact Us</h2>
+            <p class="contact-section__description">Have questions or feedback? We'd love to hear from you!</p>
+            
+            <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="8ca4abe5-035d-40f5-823b-603497dd1db6">
+                <input type="hidden" name="redirect" value="http://cos320-deanhauser.42web.io/Final/">
+                
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Your Name" required />
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Your Email" required />
+                </div>
+                
+                <div class="form-group">
+                    <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+                </div>
+                
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                <div class="h-captcha" data-captcha="true"></div>
+
+                <button type="submit" class="contact-form__button">Send Message</button>
+            </form>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <div class="footer__content">
+            <nav class="footer__nav" aria-label="Footer navigation">
+                <a href="business-search.html" class="footer__link">Search</a>
+                <a href="random-restaurant.html" class="footer__link">Random Picker</a>
+                <a href="contact.html" class="footer__link">Contact</a>
+            </nav>
+            <p class="footer__copyright">&copy; 2025 Local Maine Business Search. Dean Hauser COS320 Final Project</p>
+        </div>
+    </footer>
+    
+    <script src="scripjs/index.js"></script>
+    <script src="https://web3forms.com/client/script.js" async defer></script>
+
+</body>
+</html>

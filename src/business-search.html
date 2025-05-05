@@ -3,94 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Search for local businesses in Maine - Find restaurants, services, and more">
-    <title>Business Search - Local Maine Business Search</title>
+    <meta name="description" content="Search for local businesses in Maine cities">
+    <title>Maine Business Search</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
-        <nav class="nav" role="navigation" aria-label="Main navigation">
+        <nav class="nav">
             <div class="nav__logo">
-                <a href="index.html" class="nav__link">
+                <a href="index.html">
+                    <img src="images/logo.jpg" alt="Local Maine Business Search Logo" class="nav__logo-img" height="48" />
                     <h1>Local Maine Business Search</h1>
                 </a>
             </div>
-            <button class="theme-toggle" aria-label="Toggle dark mode">
+            <div class="nav__links">
+                <a href="random-restaurant.html" class="nav__link">Random Restaurant</a>
+                <a href="contact.html" class="nav__link">Contact Me</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <span class="theme-toggle__icon">🌙</span>
             </button>
         </nav>
     </header>
 
     <main class="main">
-        <section class="search-section" aria-labelledby="search-title">
-            <h2 id="search-title" class="search-section__title">Search Local Businesses</h2>
-            
-            <form id="searchForm" class="search-form" aria-label="Business search form">
-                <div class="search-form__grid">
-                    <div class="form-group">
-                        <label for="query" class="form-group__label">Search Query</label>
-                        <input type="text" id="query" name="query" class="form-group__input" placeholder="e.g., restaurants, coffee shops">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lat" class="form-group__label">Latitude</label>
-                        <input type="number" id="lat" name="lat" class="form-group__input" value="44.88269" step="any">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lng" class="form-group__label">Longitude</label>
-                        <input type="number" id="lng" name="lng" class="form-group__input" value="-68.71603" step="any">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="zoom" class="form-group__label">Zoom Level</label>
-                        <input type="number" id="zoom" name="zoom" class="form-group__input" value="13" min="1" max="20">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="limit" class="form-group__label">Results Limit</label>
-                        <input type="number" id="limit" name="limit" class="form-group__input" value="10" min="1" max="500">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="language" class="form-group__label">Language</label>
-                        <select id="language" name="language" class="form-group__select">
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                            <option value="fr">French</option>
-                        </select>
-                    </div>
+        <section class="search-section">
+            <h2 class="search-section__title">Find Local Businesses</h2>
+            <form id="searchForm" class="search-form">
+                <div class="search-form__group">
+                    <label for="query" class="search-form__label">Search Query</label>
+                    <input type="text" id="query" name="query" class="search-form__input" placeholder="e.g., restaurants, coffee shops" required>
                 </div>
 
-                <div class="search-form__actions">
-                    <button type="submit" class="btn btn--primary">Search</button>
-                    <button type="reset" class="btn btn--secondary">Reset</button>
+                <div class="search-form__group">
+                    <label for="city" class="search-form__label">City</label>
+                    <select id="city" name="city" class="search-form__select" required>
+                        <option value="">Select a city</option>
+                        <option value="Orono">Orono</option>
+                        <option value="Bangor">Bangor</option>
+                        <option value="Portland">Portland</option>
+                        <option value="Bar Harbor">Bar Harbor</option>
+                        <option value="Augusta">Augusta</option>
+                    </select>
                 </div>
+
+                <div class="search-form__group">
+                    <label for="limit" class="search-form__label">Results Limit</label>
+                    <input type="number" id="limit" name="limit" class="search-form__input" min="1" max="50" value="10" required>
+                </div>
+
+                <button type="submit" class="search-form__button">Search</button>
             </form>
         </section>
 
-        <section class="results-section" aria-labelledby="results-title">
-            <h2 id="results-title" class="results-section__title">Search Results</h2>
-            <div id="resultsContainer" class="results-grid">
-                <!-- Results will be dynamically inserted here -->
-            </div>
-        </section>
+        <div id="resultsContainer" class="results-container"></div>
     </main>
 
-    <!-- Modal for business details -->
-    <div id="businessModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div id="businessModal" class="modal">
         <div class="modal__content">
             <button class="modal__close" aria-label="Close modal">×</button>
             <h3 id="modalTitle" class="modal__title"></h3>
-            <div id="modalContent" class="modal__body">
-                <!-- Business details will be dynamically inserted here -->
-            </div>
+            <div id="modalContent" class="modal__body"></div>
         </div>
     </div>
-
     <footer class="footer">
         <div class="footer__content">
             <nav class="footer__nav" aria-label="Footer navigation">
@@ -98,10 +76,11 @@
                 <a href="random-restaurant.html" class="footer__link">Random Picker</a>
                 <a href="contact.html" class="footer__link">Contact</a>
             </nav>
-            <p class="footer__copyright">&copy; 2024 Local Maine Business Search. All rights reserved.</p>
+            <p class="footer__copyright">&copy; 2025 Local Maine Business Search. Dean Hauser COS320 Final Project</p>
         </div>
     </footer>
 
     <script src="scripjs/business-search.js"></script>
+    <script src="scripjs/index.js"></script>
 </body>
 </html>

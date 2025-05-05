@@ -10,30 +10,16 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-// Types
+/**
+    I Used typescript with my HTML to:
 
-// Constants
-var CITY_LOCATIONS = [{
-  name: 'Orono',
-  lat: 44.8832,
-  lng: -68.6719
-}, {
-  name: 'Bangor',
-  lat: 44.8016,
-  lng: -68.7772
-}, {
-  name: 'Portland',
-  lat: 43.6591,
-  lng: -70.2568
-}, {
-  name: 'Bar Harbor',
-  lat: 44.3876,
-  lng: -68.2039
-}, {
-  name: 'Augusta',
-  lat: 44.3106,
-  lng: -69.7795
-}];
+        Conenct data from external api to my HTML
+        Populat text depending on errors, or succesfull requests
+        HTML elements with TS to show data once it has been loaded from the API
+
+ */
+
+// API Configuration
 var API_CONFIG = {
   baseUrl: 'https://local-business-data.p.rapidapi.com/search-in-area',
   headers: {
@@ -42,58 +28,78 @@ var API_CONFIG = {
   }
 };
 
-// DOM Elements
-var searchForm = document.getElementById('searchForm');
-var resultsContainer = document.getElementById('resultsContainer');
-var businessModal = document.getElementById('businessModal');
-var modalTitle = document.getElementById('modalTitle');
-var modalContent = document.getElementById('modalContent');
-var modalClose = document.querySelector('.modal__close');
-var citySelect = document.getElementById('city');
+// City locations with latitude and longitude
+var CITY_LOCATIONS = {
+  'Orono': {
+    lat: 44.88269,
+    lng: -68.71603
+  },
+  'Bangor': {
+    lat: 44.8016,
+    lng: -68.7772
+  },
+  'Portland': {
+    lat: 43.6591,
+    lng: -70.2568
+  },
+  'Bar Harbor': {
+    lat: 44.3876,
+    lng: -68.2039
+  },
+  'Augusta': {
+    lat: 44.3106,
+    lng: -69.7795
+  }
+};
 
-// When loading api results
+// DOM Elements
+var citySelect = document.getElementById('city');
+var randomButton = document.getElementById('randomButton');
+var resultCard = document.getElementById('resultCard');
+var restaurantName = document.getElementById('restaurantName');
+var restaurantAddress = document.getElementById('restaurantAddress');
+var restaurantRating = document.getElementById('restaurantRating');
+var restaurantType = document.getElementById('restaurantType');
+
+// Modal Elements
+var modal = document.getElementById('restaurantModal');
+var modalClose = modal.querySelector('.modal__close');
+var modalRestaurantName = document.getElementById('modalRestaurantName');
+var modalRestaurantAddress = document.getElementById('modalRestaurantAddress');
+var modalRestaurantRating = document.getElementById('modalRestaurantRating');
+var modalRestaurantType = document.getElementById('modalRestaurantType');
+var modalRestaurantHours = document.getElementById('modalRestaurantHours');
+var modalRestaurantPhone = document.getElementById('modalRestaurantPhone');
+var modalRestaurantWebsite = document.getElementById('modalRestaurantWebsite');
+
+// Utility Functions
 function showLoading() {
-  resultsContainer.innerHTML = "\n        <div class=\"loading\">\n            <div class=\"loading__spinner\"></div>\n        </div>\n    ";
+  resultCard.innerHTML = "\n        <div class=\"loading\">\n            <div class=\"loading__spinner\"></div>\n        </div>\n    ";
+  resultCard.classList.remove('hidden');
+  randomButton.disabled = true;
 }
 function hideLoading() {
-  var loadingElement = resultsContainer.querySelector('.loading');
+  var loadingElement = resultCard.querySelector('.loading');
   if (loadingElement) {
     loadingElement.remove();
   }
+  randomButton.disabled = false;
 }
 function showError(message) {
-  resultsContainer.innerHTML = "\n        <div class=\"error-message\">\n            <p>".concat(message, "</p>\n        </div>\n    ");
+  resultCard.innerHTML = "\n        <div class=\"error-message\">\n            <p>".concat(message, "</p>\n        </div>\n    ");
+  resultCard.classList.remove('hidden');
+  hideLoading();
 }
-function createBusinessCard(business) {
-  var card = document.createElement('div');
-  card.className = 'business-card';
-  card.innerHTML = "\n        <h3 class=\"business-card__title\">".concat(business.name, "</h3>\n        <p class=\"business-card__address\">").concat(business.full_address, "</p>\n        <div class=\"business-card__rating\">\n            <span>\u2B50 ").concat(business.rating.toFixed(1), "</span>\n            <span>(").concat(business.reviews, " reviews)</span>\n        </div>\n        <span class=\"business-card__type\">").concat(business.type, "</span>\n    ");
-  card.addEventListener('click', function () {
-    return showBusinessDetails(business);
-  });
-  return card;
-}
-function showBusinessDetails(business) {
-  modalTitle.textContent = business.name;
-  modalContent.innerHTML = "\n        <div class=\"business-details\">\n            <p><strong>Type:</strong> ".concat(business.type, "</p>\n            <p><strong>Address:</strong> ").concat(business.full_address, "</p>\n            <p><strong>Rating:</strong> \u2B50 ").concat(business.rating.toFixed(1), " (").concat(business.reviews, " reviews)</p>\n            ").concat(business.website ? "<p><strong>Website:</strong> <a href=\"".concat(business.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(business.website, "</a></p>") : '', "\n            ").concat(business.phone_number ? "<p><strong>Phone:</strong> <a href=\"tel:".concat(business.phone_number, "\">").concat(business.phone_number, "</a></p>") : '', "\n            <p><strong>Location:</strong> ").concat(business.latitude, ", ").concat(business.longitude, "</p>\n        </div>\n    ");
-  businessModal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-  businessModal.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// API Functions
 function fetchBusinesses(_x) {
   return _fetchBusinesses.apply(this, arguments);
-} // Event Handlers
+} // Fetch and display random restaurant
 function _fetchBusinesses() {
   _fetchBusinesses = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(params) {
     var queryParams, url, response, data;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
+          // connect paramters to the base url
           queryParams = new URLSearchParams();
           Object.entries(params).forEach(function (_ref) {
             var _ref2 = _slicedToArray(_ref, 2),
@@ -136,113 +142,131 @@ function _fetchBusinesses() {
   }));
   return _fetchBusinesses.apply(this, arguments);
 }
-function handleCityChange(event) {
-  var select = event.target;
-  var selectedCity = CITY_LOCATIONS.find(function (city) {
-    return city.name === select.value;
-  });
-  if (selectedCity) {
-    var latInput = document.getElementById('lat');
-    var lngInput = document.getElementById('lng');
-    latInput.value = selectedCity.lat.toString();
-    lngInput.value = selectedCity.lng.toString();
-  }
-}
-function handleSearch(_x2) {
-  return _handleSearch.apply(this, arguments);
-} // Initialize
-function _handleSearch() {
-  _handleSearch = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(event) {
-    var formData, selectedCity, cityLocation, params, businesses, i;
+function getRandomRestaurant() {
+  return _getRandomRestaurant.apply(this, arguments);
+} // Display the restaurant
+function _getRandomRestaurant() {
+  _getRandomRestaurant = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var selectedCity, location, params, businesses, randomIndex, restaurant;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          event.preventDefault();
-          formData = new FormData(searchForm);
-          selectedCity = formData.get('city');
+          selectedCity = citySelect.value;
           if (selectedCity) {
-            _context2.next = 6;
+            _context2.next = 4;
             break;
           }
-          showError('Please select a city');
+          showError('Please select a city first');
           return _context2.abrupt("return");
-        case 6:
-          cityLocation = CITY_LOCATIONS.find(function (city) {
-            return city.name === selectedCity;
-          });
-          if (cityLocation) {
-            _context2.next = 10;
-            break;
-          }
-          showError('Invalid city selection');
-          return _context2.abrupt("return");
-        case 10:
-          params = {
-            query: formData.get('query'),
-            lat: cityLocation.lat,
-            lng: cityLocation.lng,
-            zoom: 13,
-            limit: parseInt(formData.get('limit')),
-            language: 'en',
-            region: 'us'
-          };
-          _context2.prev = 11;
+        case 4:
           showLoading();
-          // Returns array of businesses
-          _context2.next = 15;
+          _context2.prev = 5;
+          location = CITY_LOCATIONS[selectedCity];
+          params = {
+            lat: location.lat,
+            lng: location.lng,
+            zoom: 13,
+            limit: 10,
+            language: 'en',
+            region: 'us',
+            extract_emails_and_contacts: false,
+            query: 'Restaurants'
+          };
+          _context2.next = 10;
           return fetchBusinesses(params);
-        case 15:
+        case 10:
           businesses = _context2.sent;
           if (!(businesses.length === 0)) {
-            _context2.next = 19;
+            _context2.next = 13;
             break;
           }
-          showError('No businesses found matching your criteria.');
-          return _context2.abrupt("return");
-        case 19:
-          resultsContainer.innerHTML = '';
-          // Using a for loop as required
-          for (i = 0; i < businesses.length; i++) {
-            resultsContainer.appendChild(createBusinessCard(businesses[i]));
-          }
-          _context2.next = 26;
+          throw new Error('No restaurants found in this area');
+        case 13:
+          // Randomly select a restaurant
+          randomIndex = Math.floor(Math.random() * businesses.length);
+          restaurant = businesses[randomIndex]; // Display the restaurant
+          displayRestaurant(restaurant);
+          _context2.next = 21;
           break;
-        case 23:
-          _context2.prev = 23;
-          _context2.t0 = _context2["catch"](11);
-          showError('An error occurred while fetching businesses. Please try again.');
-        case 26:
-          _context2.prev = 26;
+        case 18:
+          _context2.prev = 18;
+          _context2.t0 = _context2["catch"](5);
+          showError(_context2.t0 instanceof Error ? _context2.t0.message : 'An unknown error occurred');
+        case 21:
+          _context2.prev = 21;
           hideLoading();
-          return _context2.finish(26);
-        case 29:
+          return _context2.finish(21);
+        case 24:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[11, 23, 26, 29]]);
+    }, _callee2, null, [[5, 18, 21, 24]]);
   }));
-  return _handleSearch.apply(this, arguments);
+  return _getRandomRestaurant.apply(this, arguments);
 }
-function initialize() {
-  // Event Listeners
-  searchForm.addEventListener('submit', handleSearch);
-  modalClose.addEventListener('click', closeModal);
-  citySelect.addEventListener('change', handleCityChange);
+function displayRestaurant(restaurant) {
+  // Clear any loading or error states
+  hideLoading();
 
-  // Close modal when clicking outside
-  businessModal.addEventListener('click', function (event) {
-    if (event.target === businessModal) {
-      closeModal();
-    }
-  });
+  // Update result card content
+  resultCard.innerHTML = "\n        <div class=\"result-card__content\">\n            <h3 class=\"result-card__title\">".concat(restaurant.name, "</h3>\n            <p class=\"result-card__address\">").concat(restaurant.address, "</p>\n            <div class=\"result-card__rating\">Rating: \u2B50").concat(restaurant.rating, "</div>\n            <p class=\"result-card__type\">").concat(restaurant.type || 'Restaurant', "</p>\n        </div>\n    ");
 
-  // Close modal with Escape key
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && businessModal.classList.contains('active')) {
-      closeModal();
-    }
+  // Show the result card with animation
+  resultCard.classList.remove('hidden');
+  setTimeout(function () {
+    return resultCard.classList.add('show');
+  }, 10);
+
+  // Make result card clickable
+  resultCard.style.cursor = 'pointer';
+  resultCard.addEventListener('click', function () {
+    return showRestaurantDetails(restaurant);
   });
 }
 
-// Start the application
-document.addEventListener('DOMContentLoaded', initialize);
+// Show restaurant details in modal
+function showRestaurantDetails(restaurant) {
+  modalRestaurantName.textContent = restaurant.name;
+  modalRestaurantAddress.textContent = restaurant.address;
+  modalRestaurantRating.textContent = "Rating: ".concat(restaurant.rating);
+  modalRestaurantType.textContent = restaurant.type || 'Restaurant';
+
+  // Optional details
+  if (restaurant.hours) {
+    modalRestaurantHours.innerHTML = "<strong>Hours:</strong> ".concat(restaurant.hours);
+  }
+  if (restaurant.phone) {
+    modalRestaurantPhone.innerHTML = "<strong>Phone:</strong> <a href=\"tel:".concat(restaurant.phone, "\">").concat(restaurant.phone, "</a>");
+  }
+  if (restaurant.website) {
+    modalRestaurantWebsite.innerHTML = "<strong>Website:</strong> <a href=\"".concat(restaurant.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(restaurant.website, "</a>");
+  }
+
+  // Show modal
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// Close modal
+function closeModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Event Listeners
+randomButton.addEventListener('click', getRandomRestaurant);
+modalClose.addEventListener('click', closeModal);
+
+// Close modal when clicking outside
+modal.addEventListener('click', function (e) {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && modal.classList.contains('active')) {
+    closeModal();
+  }
+});
