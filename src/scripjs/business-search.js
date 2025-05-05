@@ -188,6 +188,7 @@ function _handleSearch() {
           };
           _context2.prev = 11;
           showLoading();
+          // Returns array of businesses
           _context2.next = 15;
           return fetchBusinesses(params);
         case 15:

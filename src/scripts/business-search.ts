@@ -191,6 +191,7 @@ async function handleSearch(event: Event): Promise<void> {
 
     try {
         showLoading();
+        // Returns array of businesses
         const businesses = await fetchBusinesses(params);
         
         if (businesses.length === 0) {

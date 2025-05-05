@@ -10,6 +10,10 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/**
+I Used typescript to 
+ */
+
 // API Configuration
 var API_CONFIG = {
   baseUrl: 'https://local-business-data.p.rapidapi.com/search-in-area',
@@ -52,17 +56,33 @@ var restaurantAddress = document.getElementById('restaurantAddress');
 var restaurantRating = document.getElementById('restaurantRating');
 var restaurantType = document.getElementById('restaurantType');
 
+// Modal Elements
+var modal = document.getElementById('restaurantModal');
+var modalClose = modal.querySelector('.modal__close');
+var modalRestaurantName = document.getElementById('modalRestaurantName');
+var modalRestaurantAddress = document.getElementById('modalRestaurantAddress');
+var modalRestaurantRating = document.getElementById('modalRestaurantRating');
+var modalRestaurantType = document.getElementById('modalRestaurantType');
+var modalRestaurantHours = document.getElementById('modalRestaurantHours');
+var modalRestaurantPhone = document.getElementById('modalRestaurantPhone');
+var modalRestaurantWebsite = document.getElementById('modalRestaurantWebsite');
+
 // Utility Functions
 function showLoading() {
+  resultCard.innerHTML = "\n        <div class=\"loading\">\n            <div class=\"loading__spinner\"></div>\n        </div>\n    ";
+  resultCard.classList.remove('hidden');
   randomButton.disabled = true;
-  randomButton.textContent = 'Loading...';
 }
 function hideLoading() {
+  var loadingElement = resultCard.querySelector('.loading');
+  if (loadingElement) {
+    loadingElement.remove();
+  }
   randomButton.disabled = false;
-  randomButton.textContent = 'Surprise Me!';
 }
 function showError(message) {
-  alert(message);
+  resultCard.innerHTML = "\n        <div class=\"error-message\">\n            <p>".concat(message, "</p>\n        </div>\n    ");
+  resultCard.classList.remove('hidden');
   hideLoading();
 }
 function fetchBusinesses(_x) {
@@ -74,6 +94,7 @@ function _fetchBusinesses() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
+          // connect paramters to the base url
           queryParams = new URLSearchParams();
           Object.entries(params).forEach(function (_ref) {
             var _ref2 = _slicedToArray(_ref, 2),
@@ -118,7 +139,7 @@ function _fetchBusinesses() {
 }
 function getRandomRestaurant() {
   return _getRandomRestaurant.apply(this, arguments);
-} // Event Listeners
+} // Display the restaurant
 function _getRandomRestaurant() {
   _getRandomRestaurant = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
     var selectedCity, location, params, businesses, randomIndex, restaurant;
@@ -159,32 +180,88 @@ function _getRandomRestaurant() {
           // Randomly select a restaurant
           randomIndex = Math.floor(Math.random() * businesses.length);
           restaurant = businesses[randomIndex]; // Display the restaurant
-          restaurantName.textContent = restaurant.name;
-          restaurantAddress.textContent = restaurant.address;
-          restaurantRating.textContent = "Rating: ".concat(restaurant.rating);
-          restaurantType.textContent = restaurant.type || 'Restaurant';
-
-          // Show the result card with animation
-          resultCard.classList.remove('hidden');
-          setTimeout(function () {
-            return resultCard.classList.add('show');
-          }, 10);
-          _context2.next = 26;
+          displayRestaurant(restaurant);
+          _context2.next = 21;
           break;
-        case 23:
-          _context2.prev = 23;
+        case 18:
+          _context2.prev = 18;
           _context2.t0 = _context2["catch"](5);
           showError(_context2.t0 instanceof Error ? _context2.t0.message : 'An unknown error occurred');
-        case 26:
-          _context2.prev = 26;
+        case 21:
+          _context2.prev = 21;
           hideLoading();
-          return _context2.finish(26);
-        case 29:
+          return _context2.finish(21);
+        case 24:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[5, 23, 26, 29]]);
+    }, _callee2, null, [[5, 18, 21, 24]]);
   }));
   return _getRandomRestaurant.apply(this, arguments);
 }
+function displayRestaurant(restaurant) {
+  // Clear any loading or error states
+  hideLoading();
+
+  // Update result card content
+  resultCard.innerHTML = "\n        <div class=\"result-card__content\">\n            <h3 class=\"result-card__title\">".concat(restaurant.name, "</h3>\n            <p class=\"result-card__address\">").concat(restaurant.address, "</p>\n            <div class=\"result-card__rating\">Rating: \u2B50").concat(restaurant.rating, "</div>\n            <p class=\"result-card__type\">").concat(restaurant.type || 'Restaurant', "</p>\n        </div>\n    ");
+
+  // Show the result card with animation
+  resultCard.classList.remove('hidden');
+  setTimeout(function () {
+    return resultCard.classList.add('show');
+  }, 10);
+
+  // Make result card clickable
+  resultCard.style.cursor = 'pointer';
+  resultCard.addEventListener('click', function () {
+    return showRestaurantDetails(restaurant);
+  });
+}
+
+// Show restaurant details in modal
+function showRestaurantDetails(restaurant) {
+  modalRestaurantName.textContent = restaurant.name;
+  modalRestaurantAddress.textContent = restaurant.address;
+  modalRestaurantRating.textContent = "Rating: ".concat(restaurant.rating);
+  modalRestaurantType.textContent = restaurant.type || 'Restaurant';
+
+  // Optional details
+  if (restaurant.hours) {
+    modalRestaurantHours.innerHTML = "<strong>Hours:</strong> ".concat(restaurant.hours);
+  }
+  if (restaurant.phone) {
+    modalRestaurantPhone.innerHTML = "<strong>Phone:</strong> <a href=\"tel:".concat(restaurant.phone, "\">").concat(restaurant.phone, "</a>");
+  }
+  if (restaurant.website) {
+    modalRestaurantWebsite.innerHTML = "<strong>Website:</strong> <a href=\"".concat(restaurant.website, "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(restaurant.website, "</a>");
+  }
+
+  // Show modal
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// Close modal
+function closeModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Event Listeners
 randomButton.addEventListener('click', getRandomRestaurant);
+modalClose.addEventListener('click', closeModal);
+
+// Close modal when clicking outside
+modal.addEventListener('click', function (e) {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && modal.classList.contains('active')) {
+    closeModal();
+  }
+});

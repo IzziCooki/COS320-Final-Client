@@ -1,8 +1,15 @@
+/**
+I Used typescript to 
+ */
+
 interface Business {
     name: string;
     address: string;
     rating: number;
     type: string;
+    hours?: string;
+    phone?: string;
+    website?: string;
 }
 
 interface SearchParams {
@@ -43,23 +50,48 @@ const restaurantAddress = document.getElementById('restaurantAddress') as HTMLPa
 const restaurantRating = document.getElementById('restaurantRating') as HTMLDivElement;
 const restaurantType = document.getElementById('restaurantType') as HTMLParagraphElement;
 
+// Modal Elements
+const modal = document.getElementById('restaurantModal') as HTMLDivElement;
+const modalClose = modal.querySelector('.modal__close') as HTMLButtonElement;
+const modalRestaurantName = document.getElementById('modalRestaurantName') as HTMLHeadingElement;
+const modalRestaurantAddress = document.getElementById('modalRestaurantAddress') as HTMLParagraphElement;
+const modalRestaurantRating = document.getElementById('modalRestaurantRating') as HTMLDivElement;
+const modalRestaurantType = document.getElementById('modalRestaurantType') as HTMLParagraphElement;
+const modalRestaurantHours = document.getElementById('modalRestaurantHours') as HTMLDivElement;
+const modalRestaurantPhone = document.getElementById('modalRestaurantPhone') as HTMLDivElement;
+const modalRestaurantWebsite = document.getElementById('modalRestaurantWebsite') as HTMLDivElement;
+
 // Utility Functions
 function showLoading(): void {
+    resultCard.innerHTML = `
+        <div class="loading">
+            <div class="loading__spinner"></div>
+        </div>
+    `;
+    resultCard.classList.remove('hidden');
     randomButton.disabled = true;
-    randomButton.textContent = 'Loading...';
 }
 
 function hideLoading(): void {
+    const loadingElement = resultCard.querySelector('.loading');
+    if (loadingElement) {
+        loadingElement.remove();
+    }
     randomButton.disabled = false;
-    randomButton.textContent = 'Surprise Me!';
 }
 
 function showError(message: string): void {
-    alert(message);
+    resultCard.innerHTML = `
+        <div class="error-message">
+            <p>${message}</p>
+        </div>
+    `;
+    resultCard.classList.remove('hidden');
     hideLoading();
 }
 
 async function fetchBusinesses(params: SearchParams): Promise<Business[]> {
+    // connect paramters to the base url
     const queryParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -122,14 +154,7 @@ async function getRandomRestaurant(): Promise<void> {
         const restaurant = businesses[randomIndex];
         
         // Display the restaurant
-        restaurantName.textContent = restaurant.name;
-        restaurantAddress.textContent = restaurant.address;
-        restaurantRating.textContent = `Rating: ${restaurant.rating}`;
-        restaurantType.textContent = restaurant.type || 'Restaurant';
-        
-        // Show the result card with animation
-        resultCard.classList.remove('hidden');
-        setTimeout(() => resultCard.classList.add('show'), 10);
+        displayRestaurant(restaurant);
         
     } catch (error) {
         showError(error instanceof Error ? error.message : 'An unknown error occurred');
@@ -138,6 +163,74 @@ async function getRandomRestaurant(): Promise<void> {
     }
 }
 
+// Display the restaurant
+function displayRestaurant(restaurant: Business): void {
+    // Clear any loading or error states
+    hideLoading();
+    
+    // Update result card content
+    resultCard.innerHTML = `
+        <div class="result-card__content">
+            <h3 class="result-card__title">${restaurant.name}</h3>
+            <p class="result-card__address">${restaurant.address}</p>
+            <div class="result-card__rating">Rating: ⭐${restaurant.rating}</div>
+            <p class="result-card__type">${restaurant.type || 'Restaurant'}</p>
+        </div>
+    `;
+    
+    // Show the result card with animation
+    resultCard.classList.remove('hidden');
+    setTimeout(() => resultCard.classList.add('show'), 10);
+
+    // Make result card clickable
+    resultCard.style.cursor = 'pointer';
+    resultCard.addEventListener('click', () => showRestaurantDetails(restaurant));
+}
+
+// Show restaurant details in modal
+function showRestaurantDetails(restaurant: Business): void {
+    modalRestaurantName.textContent = restaurant.name;
+    modalRestaurantAddress.textContent = restaurant.address;
+    modalRestaurantRating.textContent = `Rating: ${restaurant.rating}`;
+    modalRestaurantType.textContent = restaurant.type || 'Restaurant';
+    
+    // Optional details
+    if (restaurant.hours) {
+        modalRestaurantHours.innerHTML = `<strong>Hours:</strong> ${restaurant.hours}`;
+    }
+    if (restaurant.phone) {
+        modalRestaurantPhone.innerHTML = `<strong>Phone:</strong> <a href="tel:${restaurant.phone}">${restaurant.phone}</a>`;
+    }
+    if (restaurant.website) {
+        modalRestaurantWebsite.innerHTML = `<strong>Website:</strong> <a href="${restaurant.website}" target="_blank" rel="noopener noreferrer">${restaurant.website}</a>`;
+    }
+
+    // Show modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close modal
+function closeModal(): void {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
 // Event Listeners
 randomButton.addEventListener('click', getRandomRestaurant);
+modalClose.addEventListener('click', closeModal);
+
+// Close modal when clicking outside
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
 

@@ -15,12 +15,13 @@
         <nav class="nav">
             <div class="nav__logo">
                 <a href="index.html">
+                    <img src="images/logo.jpg" alt="Local Maine Business Search Logo" class="nav__logo-img" height="48" />
                     <h1>Local Maine Business Search</h1>
                 </a>
             </div>
             <div class="nav__links">
                 <a href="business-search.html" class="nav__link">Business Search</a>
-                <a href="#" class="nav__link">Contact Me</a>
+                <a href="contact.html" class="nav__link">Contact Me</a>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <span class="theme-toggle__icon">🌙</span>
@@ -59,9 +60,30 @@
             </div>
         </section>
     </main>
+
+    <!-- Restaurant Details Modal -->
+    <div id="restaurantModal" class="modal">
+        <div class="modal__content">
+            <button class="modal__close" aria-label="Close modal">&times;</button>
+            <h3 id="modalRestaurantName" class="modal__title"></h3>
+            <div class="modal__details">
+                <p id="modalRestaurantAddress" class="modal__address"></p>
+                <div id="modalRestaurantRating" class="modal__rating"></div>
+                <p id="modalRestaurantType" class="modal__type"></p>
+                <div id="modalRestaurantHours" class="modal__hours"></div>
+                <div id="modalRestaurantPhone" class="modal__phone"></div>
+                <div id="modalRestaurantWebsite" class="modal__website"></div>
+            </div>
+        </div>
+    </div>
     
     <footer class="footer">
         <div class="footer__content">
+            <nav class="footer__nav" aria-label="Footer navigation">
+                <a href="business-search.html" class="footer__link">Search</a>
+                <a href="random-restaurant.html" class="footer__link">Random Picker</a>
+                <a href="contact.html" class="footer__link">Contact</a>
+            </nav>
             <p class="footer__copyright">&copy; 2024 Local Maine Business Search. All rights reserved.</p>
         </div>
     </footer>
