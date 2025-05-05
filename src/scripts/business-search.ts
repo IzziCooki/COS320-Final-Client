@@ -40,7 +40,7 @@ const CITY_LOCATIONS: CityLocation[] = [
 const API_CONFIG = {
     baseUrl: 'https://local-business-data.p.rapidapi.com/search-in-area',
     headers: {
-        'x-rapidapi-key': 'b0d6424ce8msh7f30f1848f91c61p19ce4ejsnb32bb571da63',
+        'x-rapidapi-key': 'ceaf3dfa8fmshac412818aa9d83cp1d8c6djsnb34563fc769f',
         'x-rapidapi-host': 'local-business-data.p.rapidapi.com'
     }
 };
