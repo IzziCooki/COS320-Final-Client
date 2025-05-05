@@ -1,5 +1,10 @@
 /**
-I Used typescript to 
+    I Used typescript with my HTML to:
+
+        Conenct data from external api to my HTML
+        Populat text depending on errors, or succesfull requests
+        HTML elements with TS to show data once it has been loaded from the API
+
  */
 
 interface Business {

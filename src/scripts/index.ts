@@ -1,3 +1,16 @@
+/**
+    This is my dark/light mode logic for my webpage
+
+        By using typescript with local storage, I was able hold the state of the page across html pages
+        There is an event listen waiting for the dark/light mode to be pressed, once it is, there is logic to check what the 
+        state of the mode is, then it will switch to the opposite. 
+
+ */
+
+
+
+
+
 // Theme management
 const THEME_KEY = 'theme-preference';
 
